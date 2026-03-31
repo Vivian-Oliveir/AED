@@ -1,0 +1,1 @@
+rintf("%d\n",alg);
