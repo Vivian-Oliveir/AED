@@ -6,7 +6,6 @@ int* findDiagonalOrder( int** mat, int matSize, int* matColSize, int* returnSize
 int main(){
     int **mat, i, j, *diagonalOrder, *returnSize, *matColSize;
     mat = (int **)malloc( 5 * sizeof(int *) );
-    diagonalOrder = (int *)malloc( 100 * sizeof(int) );
     returnSize = (int *)malloc( sizeof(int) );
     matColSize = (int *)malloc( sizeof(int) );
     *matColSize = 3;
@@ -14,6 +13,7 @@ int main(){
     for ( i = 0; i < 5; i++ ) {
         mat[i] = (int *)malloc( 3 * sizeof(int) );
     }
+
     for ( i = 0; i < 5; i++ ) {
         for ( j = 0; j < 3; j++ ) {
             printf("Digite um número: ");
@@ -34,10 +34,15 @@ int main(){
         printf("%d ", diagonalOrder[i]);
     }
 
+    for ( i = 0; i < 5; i++ ) {
+        free( mat[i] );
+    }
+    
     free( mat );
     free( diagonalOrder );
     free( returnSize );
     free( matColSize );
+
     return 0;
 }
 
