@@ -27,59 +27,69 @@ int main(){
 }
 
 bool isValid(char* s) {
-    int i=0, j, c=0;
-    for(i=0;*(s+i)!='\0';i++){
-        if(*(s+i)!='(' && *(s+i)!=')' && *(s+i)!='[' && *(s+i)!=']' &&
-        *(s+i)!='{' && *(s+i)!='}'){
+    int i, j, aceito = 0;
+    char aceitos[] = "()[]{}", last, aberto_m, fechado_m, continuar;
+    char abertos[] = "([{", fechados[] = ")]}";
+
+    for( i = 0; *(s+i) != '\0'; i++ ) {
+        aceito = 0;
+
+        for ( j = 0; j < 6; j++) {
+            if( *(s+i) == aceitos[j] ){
+                aceito = 1;
+                break;
+            }
+        }
+
+        if( aceito == 0 ) {
             return false;
         }
+    } //ver se todos os caracteres são válidos
+
+    if( *s == ']' || *s == '}' || *s == ')'){
+        return false;
     }
 
-    i=0;
+    for( i = 0; *(s+i) != '\0'; i++ ) {
+        aceito = 0;
+        continuar = i;
+        for ( j = 0; j < 3; j++ ) {
+            if( *(s+i) == abertos[j] ) {
+                aceito = 1;
+                aberto_m = i;
 
-    while(1){
-        if((*(s+i)=='(' && *(s+i+1)==')') || (*(s+i)=='[' && *(s+i+1)==']') ||
-        (*(s+i)=='{' && *(s+i+1)=='}')){
-            c = i;
-            i+=2;
-            if(*(s+c+2)=='\0'){
-                return true;
-            }
-        }else if((*(s+i)=='(' && *(s+i+1)!=')') || (*(s+i)=='[' && *(s+i+1)!=']') ||
-        (*(s+i)=='{' && *(s+i+1)!='}')){
-            j = i+1;
-            while((*(s+j) != '\0') && ((*(s+i)=='(' && *(s+j)!=')') || (*(s+i)=='[' && *(s+j)!=']') ||
-            (*(s+i)=='{' && *(s+j)!='}'))){
-                j++;
-            }
-            if((*(s+j) == '\0') && (*(s+i)=='(' && *(s+j)!=')') || (*(s+i)=='[' && *(s+j)!=']') ||
-            (*(s+i)=='{' && *(s+j)!='}')){
-                return false;
-            }
-            c = j;
-            i++;
-            j--;
-            if(i==j){
-                return false;
-            }
-            while(i<j){
-                if((*(s+i)=='(' && *(s+j)!=')') || (*(s+i)=='[' && *(s+j)!=']') ||
-            (*(s+i)=='{' && *(s+j)!='}')){
-                return false;
-                }else if((*(s+i)==')') || (*(s+i)==']') ||
-                (*(s+i)=='}')){
-                    return false;
-                }else{
+                while ( *(s+i) != '\0' && *(s+i) != fechados[j] ) {
                     i++;
-                    j--;
                 }
-            }
-            if(*(s+c+1)=='\0'){
-                return true;
-            }   
-        }else if((*(s+i)==')') || (*(s+i)==']') ||
-        (*(s+i)=='}')){
+                if( *(s+i) == '\0' ){
+                    return false;
+                }
+
+                fechado_m = i;
+                continuar = fechado_m + 1;
+
+                while( aberto_m < fechado_m && (fechado_m - aberto_m > 1)) {
+                    j = 0;
+                    aberto_m++;
+                    fechado_m--;
+                    for ( j = 0; j < 3; j++ ) {
+                        if( *(s+aberto_m) == abertos[j] && *(s+fechado_m) != fechados[j] ){
+                            return false;
+                        }
+                    }
+                }
+
+                if( fechado_m - aberto_m == 1 ) {
+                    return false;
+                }
+                break;
+            } 
+        }
+        if ( aceito == 0 ){
             return false;
         }
+        i = continuar;
     }
+
+    return true;
 }
