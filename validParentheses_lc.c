@@ -8,87 +8,66 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool isValid(char* s);
+bool isValid( char* s );
 
-int main(){
+int main() {
     char *str;
-    str = (char *)malloc(10000 * sizeof(char));
+    str = ( char * )malloc( 10000 * sizeof( char ) );
 
     printf("Digite: ");
     scanf("%[^\n]",str);
-    //printf("%s",str);
 
-    if(isValid(str)){
+    if( isValid( str ) ) {
         printf("Entrada válida.");
-    }else{
+    } else {
         printf("Entrada inválida.");
     }
 
+    return 0;
 }
 
-bool isValid(char* s) {
-    int i, j, aceito = 0;
-    char aceitos[] = "()[]{}", last, aberto_m, fechado_m, continuar;
-    char abertos[] = "([{", fechados[] = ")]}";
+bool isValid( char* s ) {
+    int i, j, n = 0, l, aceito = 0;
 
-    for( i = 0; *(s+i) != '\0'; i++ ) {
+    while( *(s + n) != '\0' ) {
+        if( ( *( s + n ) != '(' ) && ( *( s + n ) != ')' ) 
+            && ( *( s + n ) != '[' ) && ( *( s + n ) != ']' ) 
+            && ( *( s + n ) != '{' ) && ( *( s + n ) != '}' ) ) {
+            return false;
+        }
+
         aceito = 0;
 
-        for ( j = 0; j < 6; j++) {
-            if( *(s+i) == aceitos[j] ){
+        while( *( s + n ) != ']' && *( s + n ) != ')' 
+            && *( s + n ) != '}' && *( s + n ) != '\0' ) { 
+            n++;
+        }
+
+        l = n-1;
+
+        if( l < 0 ) {
+            return false;
+        }
+
+        while( ( *( s + n ) == ')' && *( s + l ) == '(' ) 
+            ||( *( s + n ) == ']' && *( s + l ) == '[' )
+            ||( *( s + n ) == '}' && *( s + l ) == '{' ) ) {
+                while( *( s + l ) != '\0' ) {
+                    *( s + l ) = *( s + n + 1 );
+                    if( *( s + l ) == '\0' ) {
+                        break;
+                    }
+                    l++;
+                    n++;
+                }
                 aceito = 1;
+                n = 0;
                 break;
-            }
         }
 
         if( aceito == 0 ) {
             return false;
         }
-    } //ver se todos os caracteres são válidos
-
-    if( *s == ']' || *s == '}' || *s == ')'){
-        return false;
-    }
-
-    for( i = 0; *(s+i) != '\0'; i++ ) {
-        aceito = 0;
-        continuar = i;
-        for ( j = 0; j < 3; j++ ) {
-            if( *(s+i) == abertos[j] ) {
-                aceito = 1;
-                aberto_m = i;
-
-                while ( *(s+i) != '\0' && *(s+i) != fechados[j] ) {
-                    i++;
-                }
-                if( *(s+i) == '\0' ){
-                    return false;
-                }
-
-                fechado_m = i;
-                continuar = fechado_m + 1;
-
-                while( aberto_m < fechado_m && (fechado_m - aberto_m > 1)) {
-                    j = 0;
-                    aberto_m++;
-                    fechado_m--;
-                    for ( j = 0; j < 3; j++ ) {
-                        if( *(s+aberto_m) == abertos[j] && *(s+fechado_m) != fechados[j] ){
-                            return false;
-                        }
-                    }
-                }
-
-                if( fechado_m - aberto_m == 1 ) {
-                    return false;
-                }
-                break;
-            } 
-        }
-        if ( aceito == 0 ){
-            return false;
-        }
-        i = continuar;
     }
 
     return true;
