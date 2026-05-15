@@ -118,17 +118,3 @@ void myQueueFree(MyQueue* obj) {
         free(p);
     }
 }
-
-/**
- * Your MyQueue struct will be instantiated and called as such:
- * MyQueue* obj = myQueueCreate();
- * myQueuePush(obj, x);
- 
- * int param_2 = myQueuePop(obj);
- 
- * int param_3 = myQueuePeek(obj);
- 
- * bool param_4 = myQueueEmpty(obj);
- 
- * myQueueFree(obj);
-*/
