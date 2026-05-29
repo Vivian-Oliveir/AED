@@ -1,4 +1,3 @@
 *.exe
 .vscode/
 addtwonumbers_leetcode.c
-agenda_com.c
