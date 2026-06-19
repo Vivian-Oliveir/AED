@@ -20,6 +20,7 @@ void Lista(struct TreeNode *root);
 struct TreeNode* balanceBST(struct TreeNode* root);
 void arvorePvetor(struct TreeNode* root, int *i, int *vetorArvore);
 void quicksort(int *vetorArvore, int left, int right);
+void insereNovaArvore(struct TreeNode **root2, int *vetorArvore, int comeco, int fim);
 
 int main(){
     struct TreeNode *root;
@@ -48,13 +49,12 @@ struct TreeNode* balanceBST(struct TreeNode* root) {
 
     int meio = (*i)/2;
     struct TreeNode *root2;
+    Inicializa(&root2);
     Insere(&root2, vetorArvore[meio]);
-    for(int k = meio - 1; k>= 0; k--){
-        Insere(&root2, vetorArvore[k]);
-    }
-    for(int j = meio + 1; j < (*i); j++){
-        Insere(&root2, vetorArvore[j]);
-    }
+    
+    insereNovaArvore(&(root2->left), vetorArvore, 0, meio - 1);
+    insereNovaArvore(&(root2->right), vetorArvore, meio + 1, (*i) - 1);
+    Lista(root2);
     return root2;
 }
 
@@ -96,6 +96,28 @@ void quicksort(int *vetorArvore, int left, int right){
     if(i < right){
         quicksort(vetorArvore, i, right);
     }
+}
+
+void insereNovaArvore(struct TreeNode **root2, int *vetorArvore, int comeco, int fim){
+    if(fim - comeco == 1){
+        Insere(&(*root2), vetorArvore[fim]);
+        Insere(&(*root2), vetorArvore[comeco]);
+        return;
+    } else if(fim - comeco == 0){
+        Insere(&(*root2), vetorArvore[comeco]);
+        return;
+    } else if( fim < comeco ){
+        return;
+    }
+    
+    int meio = (fim - comeco)/2;
+
+    *root2 = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    (*root2)->left = NULL;
+    (*root2)->right = NULL;
+    (*root2)->val = vetorArvore[meio + comeco];
+    insereNovaArvore(&(*root2)->left, vetorArvore, comeco, meio + comeco - 1);
+    insereNovaArvore(&(*root2)->right, vetorArvore, meio + comeco + 1, fim);
 }
 
 void Inicializa(struct TreeNode **root) {
